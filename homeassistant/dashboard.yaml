@@ -1,0 +1,209 @@
+# Home Assistant Dashboard – Startversion (nur eingebaute Karten, keine HACS-Abhängigkeit)
+# Einspielen: Einstellungen > Dashboards > Dashboard hinzufügen (URL mit Bindestrich, z. B. "zuhause-main")
+#   > Dashboard öffnen > Stift > Drei-Punkte-Menü > "Rohkonfigurationseditor" > Inhalt ersetzen.
+# ALLE Entity-IDs sind Platzhalter (siehe README.md) – per Suchen/Ersetzen an deine Instanz anpassen.
+title: Zuhause
+views:
+  # ───────────────────────── Übersicht ─────────────────────────
+  - title: Übersicht
+    path: uebersicht
+    icon: mdi:home
+    type: sections
+    max_columns: 3
+    badges:
+      - type: entity
+        entity: person.person_1 # TODO
+        show_name: true
+        show_state: true
+        show_entity_picture: true
+      - type: entity
+        entity: weather.home # TODO
+        show_state: true
+        show_icon: true
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Jetzt
+            heading_style: title
+            icon: mdi:clock-outline
+          - type: tile
+            entity: sensor.temperatur_aussen # TODO
+            name: Außen
+            grid_options: { columns: 6 }
+          - type: tile
+            entity: sensor.temperatur_wohnzimmer # TODO
+            name: Innen
+            grid_options: { columns: 6 }
+          - type: tile
+            entity: sensor.stromverbrauch_aktuell # TODO
+            name: Strom
+            grid_options: { columns: 6 }
+          - type: tile
+            entity: sensor.luftfeuchte_wohnzimmer # TODO
+            name: Feuchte
+            grid_options: { columns: 6 }
+      - type: grid
+        cards:
+          - type: heading
+            heading: Szenen
+            heading_style: title
+            icon: mdi:palette
+          - type: tile
+            entity: scene.abend # TODO
+            name: Abend
+            icon: mdi:weather-sunset
+            tap_action: { action: toggle }
+            grid_options: { columns: 6 }
+          - type: tile
+            entity: scene.film # TODO
+            name: Film
+            icon: mdi:movie-open
+            tap_action: { action: toggle }
+            grid_options: { columns: 6 }
+          - type: tile
+            entity: scene.alles_aus # TODO
+            name: Alles aus
+            icon: mdi:power
+            tap_action: { action: toggle }
+            grid_options: { columns: 6 }
+      - type: grid
+        cards:
+          - type: heading
+            heading: Sicherheit
+            heading_style: title
+            icon: mdi:shield-home
+          - type: tile
+            entity: lock.haustuer # TODO
+            name: Haustür
+            features:
+              - type: lock-commands
+          - type: tile
+            entity: binary_sensor.fenster_offen # TODO (Gruppen-Helper "any on")
+            name: Fenster
+          - type: tile
+            entity: alarm_control_panel.home # TODO
+            name: Alarm
+            features:
+              - type: alarm-modes
+                modes: [armed_home, armed_away, disarmed]
+
+  # ───────────────────────── Räume ─────────────────────────
+  - title: Räume
+    path: raeume
+    icon: mdi:sofa
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Wohnzimmer
+            heading_style: title
+            icon: mdi:sofa
+            badges:
+              - type: entity
+                entity: sensor.temperatur_wohnzimmer # TODO
+                show_state: true
+          - type: tile
+            entity: light.wohnzimmer_decke # TODO
+            name: Decke
+            features:
+              - type: light-brightness
+          - type: tile
+            entity: light.wohnzimmer_stehlampe # TODO
+            name: Stehlampe
+            features:
+              - type: light-brightness
+          - type: tile
+            entity: cover.wohnzimmer_rollo # TODO
+            name: Rollo
+            features:
+              - type: cover-position
+      - type: grid
+        cards:
+          - type: heading
+            heading: Küche
+            heading_style: title
+            icon: mdi:fridge
+          - type: tile
+            entity: light.kueche # TODO
+            name: Licht
+            features:
+              - type: light-brightness
+          - type: tile
+            entity: switch.kaffeemaschine # TODO
+            name: Kaffeemaschine
+      - type: grid
+        cards:
+          - type: heading
+            heading: Schlafzimmer
+            heading_style: title
+            icon: mdi:bed
+          - type: tile
+            entity: light.schlafzimmer # TODO
+            name: Licht
+            features:
+              - type: light-brightness
+          - type: tile
+            entity: cover.schlafzimmer_rollo # TODO
+            name: Rollo
+            features:
+              - type: cover-position
+
+  # ───────────────────────── Klima & Energie ─────────────────────────
+  - title: Klima & Energie
+    path: klima-energie
+    icon: mdi:thermostat
+    type: sections
+    max_columns: 3
+    sections:
+      - type: grid
+        cards:
+          - type: heading
+            heading: Heizung
+            heading_style: title
+            icon: mdi:radiator
+          - type: tile
+            entity: climate.wohnzimmer # TODO
+            name: Wohnzimmer
+            features:
+              - type: target-temperature
+              - type: climate-hvac-modes
+                style: icons
+          - type: tile
+            entity: climate.schlafzimmer # TODO
+            name: Schlafzimmer
+            features:
+              - type: target-temperature
+      - type: grid
+        cards:
+          - type: heading
+            heading: Verlauf
+            heading_style: title
+            icon: mdi:chart-line
+          - type: history-graph
+            hours_to_show: 24
+            entities:
+              - entity: sensor.temperatur_wohnzimmer # TODO
+              - entity: sensor.temperatur_aussen # TODO
+            grid_options: { columns: full }
+      - type: grid
+        cards:
+          - type: heading
+            heading: Energie
+            heading_style: title
+            icon: mdi:lightning-bolt
+          - type: gauge
+            entity: sensor.stromverbrauch_aktuell # TODO
+            name: Leistung
+            min: 0
+            max: 5000
+            needle: true
+            grid_options: { columns: 6 }
+          - type: tile
+            entity: sensor.stromverbrauch_heute # TODO (utility_meter daily)
+            name: Heute
+            grid_options: { columns: 6 }
+          - type: energy-distribution # benötigt konfiguriertes Energie-Dashboard
+            grid_options: { columns: full }
